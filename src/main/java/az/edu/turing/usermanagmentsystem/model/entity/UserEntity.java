@@ -39,7 +39,7 @@ public class UserEntity {
     @Column(name = "gender", nullable = false)
     private boolean gender;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)//todo
     private Set<ProfileEntity> profiles;
 
 

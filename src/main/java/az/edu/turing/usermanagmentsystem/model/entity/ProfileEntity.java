@@ -5,14 +5,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 @Data
 @Entity(name = "profiles")
 public class ProfileEntity {
+
     @Id
     @GeneratedValue(strategy= GenerationType.UUID)
-    private UUID profileId;
+    private UUID id;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
