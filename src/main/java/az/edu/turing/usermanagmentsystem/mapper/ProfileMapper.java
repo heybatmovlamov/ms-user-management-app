@@ -5,10 +5,14 @@ import az.edu.turing.usermanagmentsystem.model.entity.ProfileEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface ProfileMapper {
     ProfileMapper INSTANCE= Mappers.getMapper(ProfileMapper.class);
-    ProfileDto profileToProfileDto(ProfileEntity profileEntity);
-    ProfileEntity profileDtoToProfileEntity(ProfileDto profileDto);
+    List<ProfileDto> entityListToDtoList(List<ProfileEntity> profileEntity);
+    ProfileDto entityToDto(ProfileEntity profileEntity);
+    List<ProfileEntity >dtoListToEntityList(List<ProfileDto> profileDtoList);
+    ProfileEntity dtoToEntity(ProfileDto profileDto);
 
 }
