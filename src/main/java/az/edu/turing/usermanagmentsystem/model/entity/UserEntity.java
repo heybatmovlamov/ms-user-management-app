@@ -14,7 +14,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column( nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -30,6 +30,5 @@ public class UserEntity {
     private LocalDateTime dateOfBirth;
 
     private boolean gender;
-
 
 }
