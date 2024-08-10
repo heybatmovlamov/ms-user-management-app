@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserDto {
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
     private String name;
 
     private String surname;
