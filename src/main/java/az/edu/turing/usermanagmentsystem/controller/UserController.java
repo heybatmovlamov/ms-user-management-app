@@ -8,83 +8,85 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@RestController("/api/v1/users")
+@RestController
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
     private final ProfileService profileService;
 
     @GetMapping("/")
-    public ResponseEntity<String> findAll() {
+    public ResponseEntity<List<UserDto>> findAll() {
         return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> findById(@PathVariable UUID id) {
+    public ResponseEntity<Optional<UserDto>> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.userById(id));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> create(@RequestBody UserDto userDto) {
-        return ResponseEntity.ok(userService.save(userDto));
+    public ResponseEntity<UserDto> create(@RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.create(userDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable UUID id) {
-        return ResponseEntity.ok(userService.update(id));
+    public ResponseEntity<Optional<UserDto>> update(@PathVariable UUID id, @RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.update(userDto));
     }
 
     @DeleteMapping("/")
-    public ResponseEntity<String> deleteAll() {
-        return ResponseEntity.ok(userService.delete);
+    public ResponseEntity<Boolean> deleteAll() {
+        return ResponseEntity.ok(userService.deleteAll());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable UUID id) {
+    public ResponseEntity<Boolean> deleteById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.deleteById(id));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<String> updateEmail(@PathVariable UUID id, @PathVariable String email) {
+    @PatchMapping("/{id}/email")
+    public ResponseEntity<Optional<UserDto>> updateEmail(@PathVariable UUID id, @RequestBody String email) {
         return ResponseEntity.ok(userService.updateEmail(id, email));
     }
 
-
-    @GetMapping("/{id}/profile/{id}")
-    public ResponseEntity<String> findProfileByUserId(@PathVariable UUID id) {
-        return ResponseEntity.ok((profileService.findProfileByUserId(id)));
+    @GetMapping("/{userId}/profile")
+    public ResponseEntity<Optional<ProfileDto>> findProfileByUserId(@PathVariable UUID userId) {
+        return ResponseEntity.ok(profileService.findProfileByUserId(userId));
     }
 
-    @PutMapping("/{id}/profile/{id}")
-    public ResponseEntity<String> updateProfile(@PathVariable UUID id) {
-        return ResponseEntity.ok((profileService.updateProfile(id)));
+    @PutMapping("/{userId}/profile")
+    public ResponseEntity<Optional<ProfileDto>> updateProfile(@PathVariable UUID userId, @RequestBody ProfileDto profileDto) {
+        return ResponseEntity.ok(profileService.updateProfile(profileDto));
     }
 
-    @PatchMapping("/{id}/profile/{id}")
-    public ResponseEntity<String> updateProfileById(@PathVariable UUID id,@PathVariable Enum status) {
-        return ResponseEntity.ok((profileService.updateProfileById(id,status)));
+//    @PatchMapping("/{userId}/profile/status")
+//    public ResponseEntity<Optional<ProfileDto>> updateProfileStatusById(@PathVariable UUID userId, @RequestBody Enum status) {
+//        return ResponseEntity.ok(profileService.updateProfileStatusById(userId, status));
+//    }
+
+    @DeleteMapping("/{userId}/profile")
+    public ResponseEntity<Boolean> deleteProfile(@PathVariable UUID userId) {
+        return ResponseEntity.ok(profileService.deleteProfile());
     }
 
-    @DeleteMapping("/{id}/profile/")
-    public ResponseEntity<String> deleteProfile() {
-        return ResponseEntity.ok((profileService.deleteProfile()));
+    @DeleteMapping("/{userId}/profile/{profileId}")
+    public ResponseEntity<Boolean> deleteProfileById(@PathVariable UUID userId, @PathVariable UUID profileId) {
+        return ResponseEntity.ok(profileService.deleteProfileById(profileId));
     }
 
-    @DeleteMapping("/{id}/profile/{id}")
-    public ResponseEntity<String> deleteProfileById(@PathVariable UUID id) {
-        return ResponseEntity.ok((profileService.deleteProfileById(id)));
+    @GetMapping("/{userId}/profile/all")
+    public ResponseEntity<List<ProfileDto>> findAllProfiles(@PathVariable UUID userId) {
+        return ResponseEntity.ok(profileService.findAllProfiles());
     }
 
-    @GetMapping("/{id}/profile/")
-    public ResponseEntity<String> findAllProfiles() {
-        return ResponseEntity.ok((profileService.findAllProfiles()));
-    }
-
-    @PostMapping("/{id}/profile/create")
-    public ResponseEntity<String> createProfileByUserId(@PathVariable UUID id, @RequestBody ProfileDto profileDto) {
-        return ResponseEntity.ok(profileService.createByUserId(id, profileDto));
+    @PostMapping("/{userId}/profile/create")
+    public ResponseEntity<Optional<ProfileDto>> createProfileByUserId(@PathVariable UUID userId, @RequestBody ProfileDto profileDto) {
+        return ResponseEntity.ok(profileService.createProfileByUserId(userId, profileDto));
     }
 }

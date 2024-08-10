@@ -2,14 +2,10 @@ package az.edu.turing.usermanagmentsystem.service;
 
 import az.edu.turing.usermanagmentsystem.mapper.ProfileMapper;
 import az.edu.turing.usermanagmentsystem.model.dto.ProfileDto;
-import az.edu.turing.usermanagmentsystem.model.dto.UserDto;
 import az.edu.turing.usermanagmentsystem.model.entity.ProfileEntity;
-import az.edu.turing.usermanagmentsystem.model.entity.UserEntity;
 import az.edu.turing.usermanagmentsystem.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,8 +25,9 @@ public class ProfileService {
 
     }
 
-    public Optional<ProfileDto >createProfileByUserId(ProfileDto profileDto) {
+    public Optional<ProfileDto >createProfileByUserId(UUID id , ProfileDto profileDto) {
         ProfileEntity profileEntity = profileMapper.dtoToEntity(profileDto);
+        profileEntity.setId(id);
         profileEntity.setCreatedAt(LocalDateTime.now());
         profileEntity.setUpdatedAt(LocalDateTime.now());
         ProfileEntity savedProfile = profileRepository.save(profileEntity);
@@ -39,8 +36,7 @@ public class ProfileService {
 
 
     public Optional<ProfileDto> updateProfile( ProfileDto profileDto){
-        UUID id = profileDto.getId();
-        return profileRepository.findById(id).map(existingProfile -> {
+        return profileRepository.findById(profileDto.getId()).map(existingProfile -> {
             ProfileEntity updatedProfile = profileMapper.dtoToEntity(profileDto);
             updatedProfile.setId(existingProfile.getId());
             updatedProfile.setUpdatedAt(LocalDateTime.now());
@@ -50,7 +46,7 @@ public class ProfileService {
 
     }
 
-    public Optional<ProfileDto> updateProfileById(UUID id,ProfileDto profileDto) {
+    public Optional<ProfileDto> updateProfileStatusById(UUID id,ProfileDto profileDto) {
         return profileRepository.findById(id).map(existingProfile -> {
             ProfileEntity updatedProfile = profileMapper.dtoToEntity(profileDto);
             updatedProfile.setId(existingProfile.getId());
