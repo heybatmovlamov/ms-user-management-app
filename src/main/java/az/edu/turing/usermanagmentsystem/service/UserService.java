@@ -41,14 +41,32 @@ public class UserService {
         return userRepository.findById(id).map(mapper::entityToDto);
     }
 
-    public Optional<UserDto> update(UserDto userDto) {
-        return userRepository.findById(userDto.getId())// dto icerisine id daxil et yada deisdirersen
+    public Optional<UserDto> update(UUID id, UserDto userDto) {
+        return userRepository.findById(id)// dto icerisine id daxil et yada deisdirersen
                 .map(existingUser -> {
                     UserEntity updatedUserEntity = mapper.dtoToEntity(userDto);
                     UserEntity savedEntity = userRepository.save(updatedUserEntity);
                     return Optional.of(mapper.entityToDto(savedEntity));
                 }).orElseThrow(() -> new UserNotFoundException("User not found"));
 
+    }
+    public Optional<UserDto> update2(UUID id, UserDto userDto) {
+        // Müəyyən edilən id ilə istifadəçi entity-si tapılır
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user not found"));
+
+        userEntity.setName(userDto.getName());
+        userEntity.setSurname(userDto.getSurname());
+        userEntity.setEmail(userDto.getEmail());
+        userEntity.setGender(userDto.isGender());
+        userEntity.setDateOfBirth(userDto.getDateOfBirth());
+        userEntity.setPhoneNumber(userDto.getPhoneNumber());
+
+        // Yenilənmiş entity verilənlər bazasına saxlanılır
+        userRepository.save(userEntity);
+
+        // Yenilənmiş entity-dən DTO yaradılır və qaytarılır
+        UserDto updatedUserDto = mapper.entityToDto(userEntity);
+        return Optional.of(updatedUserDto);
     }
 
     public boolean deleteAll() {
