@@ -40,7 +40,7 @@ public class UserService {
 
         userEntity.setCreatedAt(LocalDateTime.now());
         userEntity.setUpdatedAt(LocalDateTime.now());
-
+        userEntity.setUserStatus(UserStatus.ACTIVE);
         UserEntity savedEntity = userRepository.save(userEntity);
 
         return mapper.entityToDto(savedEntity);
