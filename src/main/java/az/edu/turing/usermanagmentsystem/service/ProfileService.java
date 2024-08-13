@@ -3,6 +3,9 @@ package az.edu.turing.usermanagmentsystem.service;
 import az.edu.turing.usermanagmentsystem.mapper.ProfileMapper;
 import az.edu.turing.usermanagmentsystem.model.dto.ProfileDto;
 import az.edu.turing.usermanagmentsystem.model.entity.ProfileEntity;
+import az.edu.turing.usermanagmentsystem.model.entity.UserEntity;
+import az.edu.turing.usermanagmentsystem.model.enums.ProfileStatus;
+import az.edu.turing.usermanagmentsystem.model.enums.UserStatus;
 import az.edu.turing.usermanagmentsystem.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.apachecommons.CommonsLog;
@@ -13,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -23,12 +27,12 @@ public class ProfileService {
 
     public List<ProfileDto> findAllProfiles() {
         List<ProfileEntity> profiles = profileRepository.findAll();
-       List<ProfileDto> profileDto= profileMapper.entityListToDtoList(profiles);
-       return profileDto;
+        List<ProfileDto> profileDto = profileMapper.entityListToDtoList(profiles);
+        return profileDto;
 
     }
 
-    public Optional<ProfileDto >createProfileByUserId(UUID id , ProfileDto profileDto) {
+    public Optional<ProfileDto> createProfileByUserId(UUID id, ProfileDto profileDto) {
         ProfileEntity profileEntity = profileMapper.dtoToEntity(profileDto);
         profileEntity.setId(id);
         profileEntity.setCreatedAt(LocalDateTime.now());
@@ -39,7 +43,7 @@ public class ProfileService {
     }
 
 
-    public Optional<ProfileDto> updateProfile( ProfileDto profileDto){
+    public Optional<ProfileDto> updateProfile(ProfileDto profileDto) {
 
         return profileRepository.findById(profileDto.getId()).map(existingProfile -> {
             ProfileEntity updatedProfile = profileMapper.dtoToEntity(profileDto);
@@ -51,7 +55,7 @@ public class ProfileService {
 
     }
 
-    public Optional<ProfileDto> updateProfileStatusById(UUID id,ProfileDto profileDto) {
+    public Optional<ProfileDto> updateProfileStatusById(UUID id, ProfileDto profileDto) {
         log.info("updateProfileStatusById");
         return profileRepository.findById(id).map(existingProfile -> {
             ProfileEntity updatedProfile = profileMapper.dtoToEntity(profileDto);
@@ -62,26 +66,44 @@ public class ProfileService {
         });
 
     }
-    public Optional<ProfileDto> findProfileByUserId(UUID id ){
-        log.info("Find profile by id: "+id);
+
+    public Optional<ProfileDto> findProfileByUserId(UUID id) {
+        log.info("Find profile by id: " + id);
         return profileRepository.findById(id).map(profileMapper::entityToDto);
 
 
     }
 
     public boolean deleteAllProfile() {
-        log.info("Deleting all profiles");
+        List<ProfileEntity> profiles = profileRepository.findAll();
+
+        profiles.forEach(profile -> profile.setStatus(ProfileStatus.DEACTIVATED));
+
+        profileRepository.saveAll(profiles);
+        profileRepository.deleteAll();
+
+        log.info("All profiles have been marked as deleted and deleted from the database");
+
         return true;
 
     }//todo
 
 
     public boolean deleteProfileById(UUID id) {
-        return profileRepository.findById(id).map(profile -> {
-            profileRepository.delete(profile);
-            log.info("Profile with id {} deleted", id);
-            return true;
-        }).orElse(false);
+        return profileRepository.findById(id)
+                .map(profileEntity -> {
+                    profileEntity.setStatus(ProfileStatus.DEACTIVATED);
+
+                    profileRepository.save(profileEntity);
+                    profileRepository.delete(profileEntity);
+
+                    log.info("User with ID {} has been marked as deactivated and removed from the database", id);
+                    return true;
+                })
+                .orElseGet(() -> {
+                    log.warn("User with ID {} not found", id);
+                    return false;
+                });
     }
-    }//todo
+}//todo
 

@@ -27,18 +27,14 @@ public class ProfileDto {
     private ProfileStatus status;
 
     @NotBlank
-    @Size(min = 3, max = 50)
     private String username;
 
     @NotNull
     private byte[] profilePhoto;
 
     @NotNull
-    @Size(min = 2, max = 50)
     private String description;
 
     @Past
     private LocalDateTime lastSeenTime;
-
-
 }
