@@ -71,8 +71,8 @@ public class UserController {
 //    }
 
     @DeleteMapping("/{userId}/profile")
-    public ResponseEntity<Boolean> deleteProfile(@PathVariable UUID userId) {
-        return ResponseEntity.ok(profileService.deleteProfile());
+    public ResponseEntity<Boolean> deleteAllProfile() {
+        return ResponseEntity.ok(profileService.deleteAllProfile());
     }
 
     @DeleteMapping("/{userId}/profile/{profileId}")
