@@ -35,7 +35,7 @@ public class UserEntity {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name ="date_of_birth", nullable = false)
+    @Column(name ="date_of_birth", nullable = false )
     private LocalDateTime dateOfBirth;
 
     @Column(name = "gender", nullable = false)
