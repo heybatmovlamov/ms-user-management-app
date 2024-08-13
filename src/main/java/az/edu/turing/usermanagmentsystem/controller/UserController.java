@@ -37,7 +37,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Optional<UserDto>> update(@PathVariable UUID id, @RequestBody UserDto userDto) {
-        return ResponseEntity.ok(userService.update2(id,userDto));
+        return ResponseEntity.ok(userService.update(id,userDto));
     }
 
     @DeleteMapping("/")

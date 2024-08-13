@@ -4,19 +4,25 @@ import az.edu.turing.usermanagmentsystem.exception.UserNotFoundException;
 import az.edu.turing.usermanagmentsystem.mapper.UserMapper;
 import az.edu.turing.usermanagmentsystem.model.dto.UserDto;
 import az.edu.turing.usermanagmentsystem.model.entity.UserEntity;
+import az.edu.turing.usermanagmentsystem.model.enums.UserStatus;
 import az.edu.turing.usermanagmentsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static az.edu.turing.usermanagmentsystem.model.enums.UserStatus.DELETED;
+
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserService {
-    private final UserMapper mapper;
 
+    private final UserMapper mapper;
     private final UserRepository userRepository;
 
     public List<UserDto> findAll() {
@@ -31,10 +37,13 @@ public class UserService {
     public UserDto create(UserDto userDto) {
 
         UserEntity userEntity = mapper.dtoToEntity(userDto);
-        UserEntity savedEntity = userRepository.save(userEntity);
-        UserDto savedDto = mapper.entityToDto(savedEntity);
 
-        return savedDto;
+        userEntity.setCreatedAt(LocalDateTime.now());
+        userEntity.setUpdatedAt(LocalDateTime.now());
+
+        UserEntity savedEntity = userRepository.save(userEntity);
+
+        return mapper.entityToDto(savedEntity);
     }
 
     public Optional<UserDto> userById(UUID id) {
@@ -42,43 +51,51 @@ public class UserService {
     }
 
     public Optional<UserDto> update(UUID id, UserDto userDto) {
-        return userRepository.findById(id)// dto icerisine id daxil et yada deisdirersen
-                .map(existingUser -> {
-                    UserEntity updatedUserEntity = mapper.dtoToEntity(userDto);
-                    UserEntity savedEntity = userRepository.save(updatedUserEntity);
-                    return Optional.of(mapper.entityToDto(savedEntity));
-                }).orElseThrow(() -> new UserNotFoundException("User not found"));
-
-    }
-    public Optional<UserDto> update2(UUID id, UserDto userDto) {
-        // Müəyyən edilən id ilə istifadəçi entity-si tapılır
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user not found"));
 
+        userEntity.setUpdatedAt(LocalDateTime.now());
         userEntity.setName(userDto.getName());
         userEntity.setSurname(userDto.getSurname());
         userEntity.setEmail(userDto.getEmail());
-        userEntity.setGender(userDto.isGender());
+        userEntity.setGender(userDto.getGender());
         userEntity.setDateOfBirth(userDto.getDateOfBirth());
         userEntity.setPhoneNumber(userDto.getPhoneNumber());
 
-        // Yenilənmiş entity verilənlər bazasına saxlanılır
         userRepository.save(userEntity);
 
-        // Yenilənmiş entity-dən DTO yaradılır və qaytarılır
         UserDto updatedUserDto = mapper.entityToDto(userEntity);
         return Optional.of(updatedUserDto);
     }
 
     public boolean deleteAll() {
-        return false ;//todo
+        List<UserEntity> users = userRepository.findAll();
+
+        users.forEach(user -> user.setUserStatus(UserStatus.DELETED));
+
+        userRepository.saveAll(users);
+        userRepository.deleteAll();
+
+        log.info("All users have been marked as deleted and deleted from the database");
+
+        return true;
     }
 
     public boolean deleteById(UUID id) {
         return userRepository.findById(id)
                 .map(userEntity -> {
+                    userEntity.setUserStatus(UserStatus.DELETED);
+
+                    userRepository.save(userEntity);
                     userRepository.delete(userEntity);
-        return true;
-                }).orElse(false);}
+
+                    log.info("User with ID {} has been marked as deleted and removed from the database", id);
+                    return true;
+                })
+                .orElseGet(() -> {
+                    log.warn("User with ID {} not found", id);
+                    return false;
+                });
+    }
 
 
     public Optional<UserDto> updateEmail(UUID id , String email) {
