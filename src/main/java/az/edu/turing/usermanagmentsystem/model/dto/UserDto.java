@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserDto {
 
-    @Past
+    @NotNull
     private LocalDateTime createdAt;
 
-    @Past
+    @NotNull
     private LocalDateTime updatedAt;
 
     @NotBlank
