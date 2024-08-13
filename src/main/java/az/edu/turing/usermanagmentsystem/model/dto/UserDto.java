@@ -1,5 +1,6 @@
 package az.edu.turing.usermanagmentsystem.model.dto;
 
+import az.edu.turing.usermanagmentsystem.model.enums.GenderType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,6 +41,6 @@ public class UserDto {
     private LocalDateTime dateOfBirth;
 
     @NotNull
-    private boolean gender;
+    private GenderType gender;
 
 }
