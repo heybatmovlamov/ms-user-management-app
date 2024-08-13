@@ -1,7 +1,7 @@
-package com.example.bff.controller;
+package az.edu.turing.bff.controller;
 
-import com.example.bff.dto.UserDto;
-import com.example.bff.service.UserService;
+import az.edu.turing.bff.dto.UserDto;
+import az.edu.turing.bff.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

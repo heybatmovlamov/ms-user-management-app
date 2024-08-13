@@ -1,6 +1,6 @@
-package com.example.bff.dto;
+package az.edu.turing.bff.dto;
 
-import com.example.bff.enums.GenderType;
+import az.edu.turing.bff.enums.GenderType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

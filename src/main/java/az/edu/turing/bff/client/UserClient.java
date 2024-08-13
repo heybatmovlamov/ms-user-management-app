@@ -1,6 +1,6 @@
-package com.example.bff.client;
+package az.edu.turing.bff.client;
 
-import com.example.bff.dto.UserDto;
+import az.edu.turing.bff.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;

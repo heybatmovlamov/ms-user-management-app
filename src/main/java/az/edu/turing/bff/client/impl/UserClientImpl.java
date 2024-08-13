@@ -1,8 +1,8 @@
-package com.example.bff.client.impl;
+package az.edu.turing.bff.client.impl;
 
-import com.example.bff.client.UserClient;
-import com.example.bff.dto.UserDto;
-import com.example.bff.service.UserService;
+import az.edu.turing.bff.client.UserClient;
+import az.edu.turing.bff.dto.UserDto;
+import az.edu.turing.bff.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

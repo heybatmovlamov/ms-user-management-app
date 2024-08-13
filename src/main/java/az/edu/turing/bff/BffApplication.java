@@ -1,4 +1,4 @@
-package com.example.bff;
+package az.edu.turing.bff;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

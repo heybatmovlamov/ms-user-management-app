@@ -1,7 +1,7 @@
-package com.example.bff.service;
+package az.edu.turing.bff.service;
 
-import com.example.bff.client.UserClient;
-import com.example.bff.dto.UserDto;
+import az.edu.turing.bff.client.UserClient;
+import az.edu.turing.bff.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.http.ResponseEntity;
