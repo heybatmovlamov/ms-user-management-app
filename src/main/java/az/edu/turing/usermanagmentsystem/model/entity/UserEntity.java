@@ -1,5 +1,7 @@
 package az.edu.turing.usermanagmentsystem.model.entity;
 
+import az.edu.turing.usermanagmentsystem.model.enums.GenderType;
+import az.edu.turing.usermanagmentsystem.model.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -37,7 +39,10 @@ public class UserEntity {
     private LocalDateTime dateOfBirth;
 
     @Column(name = "gender", nullable = false)
-    private boolean gender;
+    private GenderType gender;
+
+    @Column(name = "status" , nullable = false)
+    private UserStatus userStatus;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)//todo
     private Set<ProfileEntity> profiles;

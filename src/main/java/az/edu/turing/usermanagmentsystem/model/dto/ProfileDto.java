@@ -1,5 +1,6 @@
 package az.edu.turing.usermanagmentsystem.model.dto;
 
+import az.edu.turing.usermanagmentsystem.model.enums.ProfileStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class ProfileDto {
 
     private LocalDateTime updatedAt;
 
-    private Enum status;
+    private ProfileStatus status;
 
     private String username;
 
