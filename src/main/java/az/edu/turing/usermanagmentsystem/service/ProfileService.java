@@ -1,5 +1,6 @@
 package az.edu.turing.usermanagmentsystem.service;
 
+import az.edu.turing.usermanagmentsystem.exception.UserNotFoundException;
 import az.edu.turing.usermanagmentsystem.mapper.ProfileMapper;
 import az.edu.turing.usermanagmentsystem.model.dto.ProfileDto;
 import az.edu.turing.usermanagmentsystem.model.entity.ProfileEntity;
@@ -21,50 +22,57 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class ProfileService {
+
     private final ProfileMapper profileMapper;
     private final ProfileRepository profileRepository;
 
-
-    public List<ProfileDto> findAllProfiles() {
-        List<ProfileEntity> profiles = profileRepository.findAll();
-        List<ProfileDto> profileDto = profileMapper.entityListToDtoList(profiles);
-        return profileDto;
+    public List<ProfileDto> findAllProfiles(UUID userId) {
+        List<ProfileEntity> profiles = profileRepository.findByUserId(userId);
+        return profileMapper.entityListToDtoList(profiles);
 
     }
 
     public Optional<ProfileDto> createProfileByUserId(UUID id, ProfileDto profileDto) {
+
         ProfileEntity profileEntity = profileMapper.dtoToEntity(profileDto);
+
         profileEntity.setId(id);
         profileEntity.setCreatedAt(LocalDateTime.now());
         profileEntity.setUpdatedAt(LocalDateTime.now());
+
         ProfileEntity savedProfile = profileRepository.save(profileEntity);
+
         log.info("Profile created with id " + savedProfile.getId());
         return Optional.ofNullable(profileMapper.entityToDto(savedProfile));
     }
 
 
-    public Optional<ProfileDto> updateProfile(ProfileDto profileDto) {
+    public Optional<ProfileDto> updateProfile(UUID userId, ProfileDto profileDto) {
+        return profileRepository.findById(userId)
+                .map(existingProfile -> {
+                    ProfileEntity updatedProfile = profileMapper.dtoToEntity(profileDto);
 
-        return profileRepository.findById(profileDto.getId()).map(existingProfile -> {
-            ProfileEntity updatedProfile = profileMapper.dtoToEntity(profileDto);
-            updatedProfile.setId(existingProfile.getId());
-            updatedProfile.setUpdatedAt(LocalDateTime.now());
-            profileRepository.save(updatedProfile);
-            return profileMapper.entityToDto(updatedProfile);
-        });
+                    updatedProfile.setId(existingProfile.getId());
+                    updatedProfile.setUpdatedAt(LocalDateTime.now());
 
+                    profileRepository.save(updatedProfile);
+                    return Optional.ofNullable(profileMapper.entityToDto(updatedProfile));
+                })
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found"));
     }
 
-    public Optional<ProfileDto> updateProfileStatusById(UUID id, ProfileDto profileDto) {
-        log.info("updateProfileStatusById");
-        return profileRepository.findById(id).map(existingProfile -> {
-            ProfileEntity updatedProfile = profileMapper.dtoToEntity(profileDto);
-            updatedProfile.setId(existingProfile.getId());
-            updatedProfile.setUpdatedAt(LocalDateTime.now());
-            profileRepository.save(updatedProfile);
-            return profileMapper.entityToDto(updatedProfile);
-        });
+    public Optional<ProfileDto> updateProfileStatusById(UUID id, ProfileStatus status) {
+        return profileRepository.findById(id)
+                .map(existingProfile -> {
 
+                    existingProfile.setStatus(status);
+                    existingProfile.setUpdatedAt(LocalDateTime.now());
+
+                    profileRepository.save(existingProfile);
+
+                    return Optional.ofNullable(profileMapper.entityToDto(existingProfile));
+                })
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
     }
 
     public Optional<ProfileDto> findProfileByUserId(UUID id) {

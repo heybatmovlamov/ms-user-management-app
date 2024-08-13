@@ -2,6 +2,7 @@ package az.edu.turing.usermanagmentsystem.controller;
 
 import az.edu.turing.usermanagmentsystem.model.dto.ProfileDto;
 import az.edu.turing.usermanagmentsystem.model.dto.UserDto;
+import az.edu.turing.usermanagmentsystem.model.enums.ProfileStatus;
 import az.edu.turing.usermanagmentsystem.service.ProfileService;
 import az.edu.turing.usermanagmentsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -62,13 +63,13 @@ public class UserController {
 
     @PutMapping("/{userId}/profile")
     public ResponseEntity<Optional<ProfileDto>> updateProfile(@PathVariable UUID userId, @RequestBody ProfileDto profileDto) {
-        return ResponseEntity.ok(profileService.updateProfile(profileDto));
+        return ResponseEntity.ok(profileService.updateProfile(userId,profileDto));
     }
 
-//    @PatchMapping("/{userId}/profile/status")
-//    public ResponseEntity<Optional<ProfileDto>> updateProfileStatusById(@PathVariable UUID userId, @RequestBody Enum status) {
-//        return ResponseEntity.ok(profileService.updateProfileStatusById(userId, status));
-//    }
+    @PatchMapping("/{userId}/profile/status")
+    public ResponseEntity<Optional<ProfileDto>> updateProfileStatusById(@PathVariable UUID userId, @RequestBody ProfileStatus status) {
+        return ResponseEntity.ok(profileService.updateProfileStatusById(userId, status));
+    }
 
     @DeleteMapping("/{userId}/profile")
     public ResponseEntity<Boolean> deleteAllProfile() {
@@ -82,7 +83,7 @@ public class UserController {
 
     @GetMapping("/{userId}/profile/all")
     public ResponseEntity<List<ProfileDto>> findAllProfiles(@PathVariable UUID userId) {
-        return ResponseEntity.ok(profileService.findAllProfiles());
+        return ResponseEntity.ok(profileService.findAllProfiles(userId));
     }
 
     @PostMapping("/{userId}/profile/create")
