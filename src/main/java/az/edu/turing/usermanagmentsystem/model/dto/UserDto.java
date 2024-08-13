@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {//todo valid field
+public class UserDto {
 
     private UUID id;
 
