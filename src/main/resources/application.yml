@@ -1,26 +1,3 @@
-#spring:
-#  application:
-#    name: BffApplication
-#---
-#spring:
-#  config:
-#    activate:
-#      on-profile: BffApplication
-#  application:
-#    name: BffApplication
-#
-#server:
-#  port: 8082
-#
-#feign:
-#  client:
-#    config:
-#      default:
-#        connectTimeout: 5000
-#        readTimeout: 5000
-#
-#
-
 spring:
   application:
     name: BffApplication
